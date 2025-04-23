@@ -1,5 +1,6 @@
 package com.Sameera.smart_shopping.service.product;
 
+import com.Sameera.smart_shopping.dto.ProductDto;
 import com.Sameera.smart_shopping.model.Product;
 import com.Sameera.smart_shopping.request.AddProductRequest;
 import com.Sameera.smart_shopping.request.ProductUpdateRequest;
@@ -19,5 +20,7 @@ public interface IProductService {
     List<Product> getProductsByBrandAndName(String category, String name);
     Long countProductByBrandAndName(String brand, String name);
 
+    List<ProductDto> getConvertedProducts(List<Product> products);
 
+    ProductDto convertToDto(Product product);
 }

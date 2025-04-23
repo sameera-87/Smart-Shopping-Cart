@@ -1,5 +1,6 @@
 package com.Sameera.smart_shopping.controller;
 
+import com.Sameera.smart_shopping.dto.ProductDto;
 import com.Sameera.smart_shopping.exceptions.ResourceNotFoundException;
 import com.Sameera.smart_shopping.model.Product;
 import com.Sameera.smart_shopping.request.AddProductRequest;
@@ -26,14 +27,17 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts(){
         List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok(new ApiResponse("Success", products));
+        List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
+        return ResponseEntity.ok(new ApiResponse("Success", convertedProducts));
     }
 
     @GetMapping("/product/{productId}/product")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long productId){
         try {
             Product product = productService.getProductById(productId);
-            return ResponseEntity.ok(new ApiResponse("Success", product));
+            ProductDto productDto = productService.convertToDto(product);
+
+            return ResponseEntity.ok(new ApiResponse("Success", productDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
@@ -73,10 +77,11 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam String brandName, @RequestParam String productName){
         try {
             List<Product> products = productService.getProductsByBrandAndName(brandName, productName);
+            List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
             if(products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }
-            return ResponseEntity.ok(new ApiResponse("success", products));
+            return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
@@ -90,7 +95,8 @@ public class ProductController {
             if(products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }
-            return ResponseEntity.ok(new ApiResponse("success", products));
+            List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
+            return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse(e.getMessage(), null));
         }
@@ -103,7 +109,8 @@ public class ProductController {
             if(products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
+            List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("success", convertedProducts));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("error", e.getMessage()));
         }

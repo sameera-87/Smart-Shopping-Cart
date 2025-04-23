@@ -1,13 +1,18 @@
 package com.Sameera.smart_shopping.service.product;
 
+import com.Sameera.smart_shopping.dto.ImageDto;
+import com.Sameera.smart_shopping.dto.ProductDto;
 import com.Sameera.smart_shopping.exceptions.ProductNotFoundException;
 import com.Sameera.smart_shopping.model.Category;
+import com.Sameera.smart_shopping.model.Image;
 import com.Sameera.smart_shopping.model.Product;
 import com.Sameera.smart_shopping.repository.CategoryRepository;
+import com.Sameera.smart_shopping.repository.ImageRepository;
 import com.Sameera.smart_shopping.repository.ProductRepository;
 import com.Sameera.smart_shopping.request.AddProductRequest;
 import com.Sameera.smart_shopping.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 
@@ -20,6 +25,8 @@ public class ProductService implements IProductService{
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final ImageRepository imageRepository;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -115,5 +122,21 @@ public class ProductService implements IProductService{
     @Override
     public Long countProductByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand, name);
+    }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products){
+        return products.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product){
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos = images.stream()
+                .map(image -> modelMapper.map(image, ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
     }
 }
