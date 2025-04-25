@@ -1,5 +1,6 @@
 package com.Sameera.smart_shopping.service.order;
 
+import com.Sameera.smart_shopping.dto.OrderDto;
 import com.Sameera.smart_shopping.enums.OrderStatus;
 import com.Sameera.smart_shopping.exceptions.ResourceNotFoundException;
 import com.Sameera.smart_shopping.model.Cart;
@@ -10,6 +11,7 @@ import com.Sameera.smart_shopping.repository.OrderRepository;
 import com.Sameera.smart_shopping.repository.ProductRepository;
 import com.Sameera.smart_shopping.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,6 +26,7 @@ public class OrderService implements IOrderService{
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order placeOrder(Long userId) {
@@ -75,11 +78,17 @@ public class OrderService implements IOrderService{
     @Override
     public Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("No order found"));
     }
 
     @Override
     public List<Order> getUserOrders(Long userId){
         return orderRepository.findByUserId(userId);
     }
+
+    private OrderDto convertToDto(Order order){
+        return modelMapper.map(order, OrderDto.class);
+    }
+
+
 }
