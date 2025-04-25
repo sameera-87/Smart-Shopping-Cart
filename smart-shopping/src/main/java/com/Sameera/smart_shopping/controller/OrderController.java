@@ -1,5 +1,6 @@
 package com.Sameera.smart_shopping.controller;
 
+import com.Sameera.smart_shopping.dto.OrderDto;
 import com.Sameera.smart_shopping.exceptions.ResourceNotFoundException;
 import com.Sameera.smart_shopping.model.Order;
 import com.Sameera.smart_shopping.response.ApiResponse;
@@ -31,7 +32,7 @@ public class OrderController {
     @GetMapping("/{orderId}/order")
     public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId){
         try {
-            Order order = orderService.getOrder(orderId);
+            OrderDto order = orderService.getOrder(orderId);
             return ResponseEntity.ok(new ApiResponse("Item Order Success!", order));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Oops", e.getMessage()));
@@ -41,7 +42,7 @@ public class OrderController {
     @GetMapping("/{userId}/orders")
     public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId){
         try {
-            List<Order> orders = orderService.getUserOrders(userId);
+            List<OrderDto> orders = orderService.getUserOrders(userId);
             return ResponseEntity.ok(new ApiResponse("Item Order Success!", orders));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Oops", e.getMessage()));
