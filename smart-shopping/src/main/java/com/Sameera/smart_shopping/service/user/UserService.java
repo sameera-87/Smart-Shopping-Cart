@@ -1,5 +1,6 @@
 package com.Sameera.smart_shopping.service.user;
 
+import com.Sameera.smart_shopping.dto.UserDto;
 import com.Sameera.smart_shopping.exceptions.AlreadyExistsException;
 import com.Sameera.smart_shopping.exceptions.ResourceNotFoundException;
 import com.Sameera.smart_shopping.model.User;
@@ -7,6 +8,7 @@ import com.Sameera.smart_shopping.repository.UserRepository;
 import com.Sameera.smart_shopping.request.CreateUserRequest;
 import com.Sameera.smart_shopping.request.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class UserService implements IUserService{
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) {
@@ -51,7 +54,10 @@ public class UserService implements IUserService{
         userRepository.findById(userId).ifPresentOrElse(userRepository :: delete, () -> {
             throw new ResourceNotFoundException("User not found!");
         });
+    }
 
-
+    @Override
+    public UserDto convertUserToDto(User user){
+        return modelMapper.map(user, UserDto.class);
     }
 }

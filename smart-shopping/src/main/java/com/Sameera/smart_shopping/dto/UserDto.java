@@ -1,8 +1,11 @@
 package com.Sameera.smart_shopping.dto;
 
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class UserDto {
     private Long id;
     private String firstName;

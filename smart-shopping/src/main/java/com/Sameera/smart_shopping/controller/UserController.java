@@ -1,6 +1,7 @@
 package com.Sameera.smart_shopping.controller;
 
 
+import com.Sameera.smart_shopping.dto.UserDto;
 import com.Sameera.smart_shopping.exceptions.AlreadyExistsException;
 import com.Sameera.smart_shopping.exceptions.ResourceNotFoundException;
 import com.Sameera.smart_shopping.model.User;
@@ -26,7 +27,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId){
         try {
             User user = userService.getUserById(userId);
-            return ResponseEntity.ok(new ApiResponse("Success", user));
+            UserDto userDto = userService.convertUserToDto(user);
+            return ResponseEntity.ok(new ApiResponse("Success", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
@@ -36,7 +38,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request){
         try {
             User user = userService.createUser(request);
-            return ResponseEntity.ok(new ApiResponse("Create User Success!", user));
+            UserDto userDto = userService.convertUserToDto(user);
+            return ResponseEntity.ok(new ApiResponse("Create User Success!", userDto));
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
@@ -46,7 +49,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request, Long userId){
         try {
             User user = userService.updateUser(request, userId);
-            return ResponseEntity.ok(new ApiResponse("Update user success!", user));
+            UserDto userDto = userService.convertUserToDto(user);
+            return ResponseEntity.ok(new ApiResponse("Update user success!", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
