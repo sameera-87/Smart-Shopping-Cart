@@ -2,6 +2,7 @@ package com.Sameera.smart_shopping.service.cart;
 
 import com.Sameera.smart_shopping.exceptions.ResourceNotFoundException;
 import com.Sameera.smart_shopping.model.Cart;
+import com.Sameera.smart_shopping.model.User;
 import com.Sameera.smart_shopping.repository.CartItemRepository;
 import com.Sameera.smart_shopping.repository.CartRepository;
 import jakarta.transaction.Transactional;
@@ -9,10 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CartService implements ICartService{
+public class  CartService implements ICartService{
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     // Learn this thing
@@ -43,14 +45,14 @@ public class CartService implements ICartService{
     }
 
     @Override
-    public Long initializeNewCart(){
-        Cart newCart = new Cart();
-        return  cartRepository.save(newCart).getId();
-    }
+    public Cart initializeNewCart(User user){
+        return Optional.ofNullable(getCartByUserId(user.getUserId()))
+                .orElseGet(() -> {
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    return cartRepository.save(cart);
+                });
 
-    @Override
-    public Cart getCartById(Long userId) {
-        return null;
     }
 
     @Override

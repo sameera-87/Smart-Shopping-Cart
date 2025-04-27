@@ -1,5 +1,6 @@
 package com.Sameera.smart_shopping.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class Cart {
     private Long id;
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<CartItem> cartItems = new HashSet<>();
 
     @OneToOne

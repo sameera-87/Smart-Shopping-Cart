@@ -1,6 +1,7 @@
 package com.Sameera.smart_shopping.model;
 
 import com.Sameera.smart_shopping.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
