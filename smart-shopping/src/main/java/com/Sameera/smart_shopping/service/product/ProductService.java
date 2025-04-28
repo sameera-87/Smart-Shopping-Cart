@@ -2,6 +2,7 @@ package com.Sameera.smart_shopping.service.product;
 
 import com.Sameera.smart_shopping.dto.ImageDto;
 import com.Sameera.smart_shopping.dto.ProductDto;
+import com.Sameera.smart_shopping.exceptions.AlreadyExistsException;
 import com.Sameera.smart_shopping.exceptions.ProductNotFoundException;
 import com.Sameera.smart_shopping.model.Category;
 import com.Sameera.smart_shopping.model.Image;
@@ -35,6 +36,10 @@ public class ProductService implements IProductService{
         // If No, save it as a new category
         // The set as the new product category
 
+        if(productExists(request.getName(), request.getBrand())){
+            throw new AlreadyExistsException(request.getBrand() + " " + request.getName() + " already exists, you may update this product instead!" );
+        }
+
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -42,6 +47,10 @@ public class ProductService implements IProductService{
                 });
         request.setCategory(category);
         return productRepository.save(createProduct(request, category));
+    }
+
+    private boolean productExists(String name, String brand){
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category){
